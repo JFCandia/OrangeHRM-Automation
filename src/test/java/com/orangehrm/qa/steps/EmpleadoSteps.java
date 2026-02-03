@@ -19,7 +19,6 @@ public class EmpleadoSteps {
 
     @Given("el administrador está logueado en OrangeHRM")
     public void adminLogueado() {
-
         driver = DriverFactory.getDriver();
         driver.get("https://opensource-demo.orangehrmlive.com/");
 
@@ -33,7 +32,6 @@ public class EmpleadoSteps {
                 loginPage.isDashboardVisible()
         );
 
-        // 🔴 ESTE ERA EL FALLO: aquí se inicializa
         empleadoPage = new EmpleadoPage(driver);
     }
 

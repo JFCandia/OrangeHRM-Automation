@@ -1,8 +1,6 @@
 package com.orangehrm.qa.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -21,6 +19,7 @@ public class LoginPage {
 
     private WebDriverWait wait;
 
+    // ===== LOCATORS =====
     private By usernameInput = By.name("username");
     private By passwordInput = By.name("password");
     private By loginBtn = By.xpath("//button[@type='submit']");
@@ -32,28 +31,54 @@ public class LoginPage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(30));
     }
 
+    // ===== UTILIDADES =====
+    private void esperarLoader() {
+        // Espera a que el loader desaparezca, si aparece
+        try {
+            wait.until(ExpectedConditions.invisibilityOfElementLocated(loader));
+        } catch (TimeoutException e) {
+            // Si nunca aparece, seguimos adelante
+        }
+    }
+
+    private WebElement esperarVisible(By locator) {
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+
+    private WebElement esperarClickable(By locator) {
+        return wait.until(ExpectedConditions.elementToBeClickable(locator));
+    }
+
+    // ===== ACCIONES =====
     public void enterUsername(String username) {
-        // Espera a que desaparezca el loader
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(loader));
-        WebElement userInput = wait.until(ExpectedConditions.visibilityOfElementLocated(usernameInput));
+        esperarLoader();
+        WebElement userInput = esperarVisible(usernameInput);
         userInput.clear();
         userInput.sendKeys(username);
     }
 
     public void enterPassword(String password) {
-        WebElement passInput = wait.until(ExpectedConditions.visibilityOfElementLocated(passwordInput));
+        esperarLoader();
+        WebElement passInput = esperarVisible(passwordInput);
         passInput.clear();
         passInput.sendKeys(password);
     }
 
     public void clickLogin() {
-        // Espera a que desaparezca el loader antes de hacer click
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(loader));
-        WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(loginBtn));
-        btn.click();
+        esperarLoader();
+        WebElement btn = esperarClickable(loginBtn);
+        try {
+            btn.click();
+        } catch (ElementClickInterceptedException e) {
+            // Si el loader intercepta, esperamos otra vez y reintentamos
+            esperarLoader();
+            btn = esperarClickable(loginBtn);
+            btn.click();
+        }
     }
 
     public boolean isDashboardVisible() {
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(dashboardHeader)).isDisplayed();
+        esperarLoader();
+        return esperarVisible(dashboardHeader).isDisplayed();
     }
 }

@@ -37,7 +37,6 @@ public class EmpleadoPage {
     // ===== ACTIONS =====
 
     public String crearEmpleado(String nombreCompleto) {
-
         String[] nombre = nombreCompleto.split(" ");
         String firstName = nombre[0];
         String lastName = nombre.length > 1 ? nombre[1] : "Test";
@@ -45,16 +44,13 @@ public class EmpleadoPage {
         wait.until(ExpectedConditions.elementToBeClickable(menuPIM)).click();
         wait.until(ExpectedConditions.elementToBeClickable(addEmployeeBtn)).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput))
-                .sendKeys(firstName);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput)).sendKeys(firstName);
         driver.findElement(lastNameInput).sendKeys(lastName);
 
-        // 👉 Guardamos el ID REAL que OrangeHRM asigna
         String employeeIdReal = driver.findElement(employeeIdInput).getAttribute("value");
 
         driver.findElement(saveBtn).click();
 
-        // Esperar Personal Details
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//h6[text()='Personal Details']")
         ));
@@ -63,20 +59,13 @@ public class EmpleadoPage {
     }
 
     public boolean validarEmpleadoPorId(String employeeId) {
-
         wait.until(ExpectedConditions.elementToBeClickable(menuPIM)).click();
         wait.until(ExpectedConditions.elementToBeClickable(employeeListMenu)).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(searchEmployeeIdInput))
-                .sendKeys(employeeId);
-
+        wait.until(ExpectedConditions.visibilityOfElementLocated(searchEmployeeIdInput)).sendKeys(employeeId);
         driver.findElement(searchBtn).click();
 
-        By resultado = By.xpath(
-                "//div[@class='oxd-table-body']//div[text()='" + employeeId + "']"
-        );
-
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(resultado))
-                   .isDisplayed();
+        By resultado = By.xpath("//div[@class='oxd-table-body']//div[text()='" + employeeId + "']");
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(resultado)).isDisplayed();
     }
 }
