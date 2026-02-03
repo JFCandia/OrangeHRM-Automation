@@ -26,10 +26,6 @@ public class LoginSteps {
 
     @Then("accede al dashboard correctamente")
     public void validarDashboard() {
-        boolean visible = loginPage.isDashboardVisible();
-        if (!visible) {
-            System.out.println("El dashboard no fue encontrado. Verifica el selector en LoginPage.");
-        }
-        Assert.assertTrue("El dashboard no está visible después del login", visible);
+        Assert.assertTrue("El dashboard no está visible después del login", loginPage.isDashboardVisible());
     }
 }
